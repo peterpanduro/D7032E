@@ -57,3 +57,30 @@ Deno.test({
 		assertEquals(result, expected);
 	},
 });
+
+Deno.test({
+	name: "Verify existing word",
+	fn: () => {
+		const gameMode = new Boggle16();
+		const result = gameMode.verify("AARDVARK");
+		assertEquals(result, true);
+	},
+});
+
+Deno.test({
+	name: "Verify existing word using lowecase",
+	fn: () => {
+		const gameMode = new Boggle16();
+		const result = gameMode.verify("aardvark");
+		assertEquals(result, true);
+	},
+});
+
+Deno.test({
+	name: "Verify non-existing word ",
+	fn: () => {
+		const gameMode = new Boggle16();
+		const result = gameMode.verify("AAARDVARK");
+		assertEquals(result, false);
+	},
+});

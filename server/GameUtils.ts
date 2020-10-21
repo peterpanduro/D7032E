@@ -1,5 +1,4 @@
 import { BoggleGameModeInterface } from "./GameModes/BoggleGameMode.ts";
-import Player from "./Player.ts";
 
 export const shuffle = <T>(a: T[]): T[] => {
 	for (let i = a.length - 1; i > 0; i--) {
