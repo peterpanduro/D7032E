@@ -16,9 +16,8 @@ export const rollAndPlaceDice = (dice: string[][]): string[][] => {
 		returnDice[i] = [];
 		for (let j = 0; j < size; j++) {
 			const die = shuffledDice.pop();
-			if (!die) throw new Error("Die is undefined somehow");
 			const side = Math.floor(Math.random() * 6);
-			returnDice[i][j] = die[side];
+			returnDice[i][j] = die![side];
 		}
 	}
 	return returnDice;

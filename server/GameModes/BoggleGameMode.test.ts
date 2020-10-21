@@ -77,7 +77,7 @@ Deno.test({
 });
 
 Deno.test({
-	name: "Verify non-existing word ",
+	name: "Verify non-existing word",
 	fn: () => {
 		const gameMode = new Boggle16();
 		const result = gameMode.verify("AAARDVARK");

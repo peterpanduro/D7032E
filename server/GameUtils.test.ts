@@ -3,7 +3,6 @@ import {
 	assertNotEquals,
 } from "https://deno.land/std@0.74.0/testing/asserts.ts";
 import Boggle16 from "./GameModes/Boggle16.ts";
-import BoggleGameMode from "./GameModes/BoggleGameMode.ts";
 import { shuffle, rollAndPlaceDice, sortFunc } from "./GameUtils.ts";
 
 Deno.test({
