@@ -9,7 +9,9 @@ export default abstract class BoggleGameMode
 	calculateScore = (list: string[]) => {
 		var score = 0;
 		list.forEach((item) => {
-			if (item.includes("=")) item = item.replaceAll("[^0-9]", "");
+			if (item.includes("=")) {
+				item = item.replace(/[^0-9]/gm, "");
+			}
 			if (item.length == 3 || item.length == 4) score += 1;
 			if (item.length == 5) score += 2;
 			if (item.length == 6) score += 3;

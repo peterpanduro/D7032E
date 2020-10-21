@@ -1,5 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.74.0/testing/asserts.ts";
 import Boggle16 from "./Boggle16.ts";
+import Foggle16 from "./Foggle16.ts";
 
 Deno.test({
 	name: "Empty words list calculates score zero",
@@ -47,11 +48,11 @@ Deno.test({
 });
 
 Deno.test({
-	name: "Score aggregate",
+	name: "Foggle dice",
 	fn: () => {
-		const expected = 15;
-		const gameMode = new Boggle16();
-		const wordlist: Array<string> = ["and", "to", "cart", "spend", "knowledge"];
+		const expected = 2;
+		const gameMode = new Foggle16();
+		const wordlist: Array<string> = ["3+2=5", "3-1=2"];
 		const result = gameMode.calculateScore(wordlist);
 		assertEquals(result, expected);
 	},

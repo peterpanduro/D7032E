@@ -1,6 +1,6 @@
-import { BoggleGameMode } from "./BoggleGameMode.ts";
+import BoggleGameMode from "./BoggleGameMode.ts";
 
-export class Foggle16 extends BoggleGameMode {
+export default class Foggle16 extends BoggleGameMode {
 	dice = [
 		["1", "2", "3", "4", "5", "6"],
 		["1", "2", "3", "4", "5", "6"],
