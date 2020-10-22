@@ -7,24 +7,28 @@ let running = false;
 // Socket connection
 const socket = new WebSocket(`ws://${ipAddress}:2048`);
 socket.onopen = () => {
-	running = true;
-	console.log("WebSocket ready!");
+  running = true;
+  console.log("WebSocket ready!");
 };
 socket.onmessage = (messageEvent) => {
-	console.log({ messageEvent });
-	const data = messageEvent.data;
-	if (data === "CLOSE SOCKET") {
-		socket.close();
-	}
+  const data = messageEvent.data;
+  if (data === "CLOSE SOCKET") {
+    socket.close();
+  }
+  console.log(data);
 };
 socket.onclose = () => {
-	console.log("WebSocket closed!");
-	Deno.exit();
+  console.log("WebSocket closed!");
+  Deno.exit();
 };
-socket.onerror = (err) => console.error("WebSocket error:", err);
+socket.onerror = (error) => {
+  console.error("WebSocket error:", error);
+  socket.close();
+  Deno.exit();
+};
 
 for await (const input of stdin) {
-	if (socket.readyState) {
-		socket.send(input);
-	}
+  if (socket.readyState) {
+    socket.send(input);
+  }
 }
