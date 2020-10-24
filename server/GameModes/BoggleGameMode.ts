@@ -9,8 +9,10 @@
  * only defines dice values and amounts.
  */
 
+import Die from "../Die.ts";
+
 export interface BoggleGameModeInterface {
-  dice: string[][];
+  dice: Die[];
   settings: Settings;
   calculateScore(list: string[]): number;
   verify(word: string): boolean;
@@ -28,7 +30,7 @@ export class Settings {
 }
 
 export abstract class Boggle implements BoggleGameModeInterface {
-  abstract dice: string[][];
+  abstract dice: Die[];
   settings;
   private wordlist?: string[];
   private playedWords: string[] = [];

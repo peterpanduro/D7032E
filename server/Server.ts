@@ -70,5 +70,5 @@ const listenForInput = async () => {
 };
 
 // Start the server and listen for console input
-//startServer();
-//listenForInput();
+startServer();
+listenForInput();

@@ -1,4 +1,5 @@
 import { BoggleGameModeInterface } from "./GameModes/BoggleGameMode.ts";
+import Die from "./Die.ts";
 
 /**
  * Shuffle an array
@@ -20,16 +21,15 @@ export const shuffle = <T>(a: T[]): T[] => {
  * @returns A Boggle board. A Boggle board is a two-dimensional array with
  * letters (or numbers) in a "square" size
  */
-export const rollAndPlaceDice = (dice: string[][]): string[][] => {
+export const rollAndPlaceDice = (dice: Die[]): string[][] => {
   const size = Math.floor(Math.sqrt(dice.length));
   const returnDice: string[][] = [];
-  const shuffledDice = shuffle(dice!);
+  const shuffledDice = shuffle(dice);
   for (let i = 0; i < size; i++) {
     returnDice[i] = [];
     for (let j = 0; j < size; j++) {
-      const die = shuffledDice.pop();
-      const side = Math.floor(Math.random() * 6);
-      returnDice[i][j] = die![side];
+      const die = shuffledDice.pop()!;
+      returnDice[i][j] = die.getUpSide();
     }
   }
   return returnDice;

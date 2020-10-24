@@ -80,7 +80,7 @@ export default class Game {
     });
     sortedPlayers.forEach((player, index) => {
       console.log(
-        `Placement ${index}: ${player.playerID}\t${
+        `Placement ${index + 1}\nID: ${player.playerID}\nScore: ${
           this.gameMode?.calculateScore(player.getWordlist())
         }\n`,
       );
@@ -112,7 +112,7 @@ export default class Game {
     if (this.state === State.GAME_NOT_STARTED) {
       switch (message) {
         case "1":
-          this.start(new Foggle16(), 30);
+          this.start(new Boggle16(), 30);
           break;
         default:
       }
