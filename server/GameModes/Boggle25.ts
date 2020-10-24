@@ -1,6 +1,6 @@
-import { BoggleGameMode } from "./BoggleGameMode.ts";
+import { Boggle } from "./BoggleGameMode.ts";
 
-export class Boggle25 extends BoggleGameMode {
+export default class Boggle25 extends Boggle {
   dice = [
     ["Qu", "B", "Z", "J", "X", "K"],
     ["T", "O", "U", "O", "T", "O"],

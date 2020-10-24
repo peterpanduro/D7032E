@@ -3,6 +3,7 @@ import {
   assertEquals,
 } from "https://deno.land/std@0.74.0/testing/asserts.ts";
 import Boggle16 from "./Boggle16.ts";
+import { Settings } from "./BoggleGameMode.ts";
 import Foggle16 from "./Foggle16.ts";
 
 // **************************************
@@ -67,7 +68,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Boggle16();
     const result = gameMode.verify("AARDVARK");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -76,7 +77,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Boggle16();
     const result = gameMode.verify("aardvark");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -85,7 +86,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Boggle16();
     const result = gameMode.verify("AAARDVARK");
-    assertEquals(result, false);
+    assert(!result);
   },
 });
 
@@ -128,34 +129,6 @@ Deno.test({
       ["L", "O", "X", "X"],
     ];
     assert(gameMode.canPlay("HELLO", boggle));
-  },
-});
-
-Deno.test({
-  name: "Can play - Generous",
-  fn: () => {
-    const gameMode = new Boggle16();
-    const boggle = [
-      ["S", "E", "X", "X"],
-      ["C", "A", "R", "X"],
-      ["B", "X", "X", "X"],
-      ["X", "X", "X", "X"],
-    ];
-    assert(gameMode.canPlay("SCARAB", boggle, true));
-  },
-});
-
-Deno.test({
-  name: "Can't play - Generous",
-  fn: () => {
-    const gameMode = new Boggle16();
-    const boggle = [
-      ["S", "A", "X", "X"],
-      ["C", "X", "R", "X"],
-      ["B", "X", "X", "X"],
-      ["X", "X", "X", "X"],
-    ];
-    assert(!gameMode.canPlay("SCARAB", boggle, true));
   },
 });
 
@@ -245,6 +218,54 @@ Deno.test({
 
 // **************************************
 // *                                    *
+// *             CONFIG                 *
+// *                                    *
+// **************************************
+
+Deno.test({
+  name: "Can play - Generous",
+  fn: () => {
+    const config = new Settings(true, false);
+    const gameMode = new Boggle16(config);
+    const boggle = [
+      ["S", "E", "X", "X"],
+      ["C", "A", "R", "X"],
+      ["B", "X", "X", "X"],
+      ["X", "X", "X", "X"],
+    ];
+    assert(gameMode.canPlay("SCARAB", boggle));
+  },
+});
+
+Deno.test({
+  name: "Can't play - Generous",
+  fn: () => {
+    const config = new Settings(true, false);
+    const gameMode = new Boggle16(config);
+    const boggle = [
+      ["S", "A", "X", "X"],
+      ["C", "X", "R", "X"],
+      ["B", "X", "X", "X"],
+      ["X", "X", "X", "X"],
+    ];
+    assert(!gameMode.canPlay("SCARAB", boggle));
+  },
+});
+
+Deno.test({
+  name: "Battle Boggle only accept first occurence",
+  fn: () => {
+    const config = new Settings(false, true);
+    const gameMode = new Boggle16(config);
+    const expectTrue = gameMode.add("HELLO");
+    assert(expectTrue);
+    const expectFalse = gameMode.add("HELLO");
+    assert(!expectFalse);
+  },
+});
+
+// **************************************
+// *                                    *
 // *             FOGGLE                 *
 // *                                    *
 // **************************************
@@ -265,7 +286,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("1+2=3");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -274,7 +295,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("1+2=4");
-    assertEquals(result, false);
+    assert(!result);
   },
 });
 
@@ -283,7 +304,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2-2=0");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -292,7 +313,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("1*2=2");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -301,7 +322,7 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2/2=1");
-    assertEquals(result, true);
+    assert(result);
   },
 });
 
@@ -310,6 +331,25 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2/2+8-2*2=5");
-    assertEquals(result, true);
+    assert(result);
+  },
+});
+
+Deno.test({
+  name: "Multiple equals",
+  fn: () => {
+    const gameMode = new Foggle16();
+    const result = gameMode.verify("2/2+8-2*2===5");
+    console.log({ "TEST": "TEST", result });
+    assert(!result);
+  },
+});
+
+Deno.test({
+  name: "Multiple expressions in a row",
+  fn: () => {
+    const gameMode = new Foggle16();
+    const result = gameMode.verify("2**2=4");
+    assert(!result);
   },
 });

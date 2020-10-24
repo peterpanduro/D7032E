@@ -13,6 +13,7 @@ import { BoggleGameModeInterface } from "./GameModes/BoggleGameMode.ts";
 import { rollAndPlaceDice, sortFunc } from "./GameUtils.ts";
 import { printBoggle } from "../common/Utils.ts";
 import Boggle16 from "./GameModes/Boggle16.ts";
+import Boggle25 from "./GameModes/Boggle25.ts";
 import Foggle16 from "./GameModes/Foggle16.ts";
 
 export enum State {
@@ -104,7 +105,7 @@ export default class Game {
   };
 
   playWord = (word: string, boggle: string[][]): boolean => {
-    return this.gameMode!.canPlay(word, boggle, false);
+    return this.gameMode!.canPlay(word, boggle);
   };
 
   message = (message: string): void => {

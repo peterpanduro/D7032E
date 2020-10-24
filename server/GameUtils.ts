@@ -15,11 +15,13 @@ export const shuffle = <T>(a: T[]): T[] => {
 
 /**
  * 
- * @param dice An array containing arrays of possible dice outcomes. I.e [["1", "2", "3", "4", "5", "6"], ["1", "2", "3", "4", "5", "6"], ...]
- * @returns A Boggle board. A Boggle board is a two-dimensional array with letters (or numbers) in a "square" size
+ * @param dice An array containing arrays of possible dice outcomes.
+ * I.e [["1", "2", "3", "4", "5", "6"], ["1", "2", "3", "4", "5", "6"], ...]
+ * @returns A Boggle board. A Boggle board is a two-dimensional array with
+ * letters (or numbers) in a "square" size
  */
 export const rollAndPlaceDice = (dice: string[][]): string[][] => {
-  const size = Math.sqrt(dice.length);
+  const size = Math.floor(Math.sqrt(dice.length));
   const returnDice: string[][] = [];
   const shuffledDice = shuffle(dice!);
   for (let i = 0; i < size; i++) {
@@ -33,6 +35,13 @@ export const rollAndPlaceDice = (dice: string[][]): string[][] => {
   return returnDice;
 };
 
+/**
+ * Sorting function using calculateScore from GameMode
+ * @param gameMode The game mode used for sorting.
+ * This sorting using the game modes calculateScore function
+ * @param a Comparison object a
+ * @param b Comparison object b
+ */
 export const sortFunc = (
   gameMode: BoggleGameModeInterface,
   a: string[],

@@ -11,19 +11,30 @@
 
 export interface BoggleGameModeInterface {
   dice: string[][];
-  generous: boolean;
+  settings: Settings;
   calculateScore(list: string[]): number;
   verify(word: string): boolean;
-  canPlay(word: string, boggle: string[][], generous: boolean): boolean;
+  canPlay(word: string, boggle: string[][]): boolean;
+  add(word: string): boolean;
+}
+
+export class Settings {
+  generous;
+  battle;
+  constructor(generous: boolean = false, battle: boolean = false) {
+    this.generous = generous;
+    this.battle = battle;
+  }
 }
 
 export abstract class Boggle implements BoggleGameModeInterface {
   abstract dice: string[][];
-  generous;
+  settings;
   private wordlist?: string[];
+  private playedWords: string[] = [];
 
-  constructor(generous = false) {
-    this.generous = generous;
+  constructor(settings: Settings = new Settings()) {
+    this.settings = settings;
   }
 
   calculateScore = (list: string[]) => {
@@ -54,18 +65,16 @@ export abstract class Boggle implements BoggleGameModeInterface {
  * A Boggle board is a two-dimensional array with letters (or numbers)
  * @param word The word to serach for
  * @param boggle The Boggle board
- * @param generous Allow using same dice multiple times
  * @returns True if Boogle board contains the word
  */
   canPlay = (
     word: string,
     boggle: string[][],
-    generous = false,
   ): boolean => {
     const size = boggle.length;
     for (let y = 0; y < size; y++) {
       for (let x = 0; x < size; x++) {
-        const found = this.findWordFromIndex(word, boggle, generous, [y, x]);
+        const found = this.findWordFromIndex(word, boggle, [y, x]);
         if (found) return true;
       }
     }
@@ -76,7 +85,6 @@ export abstract class Boggle implements BoggleGameModeInterface {
    * 
    * @param word The word to serach for
    * @param boggle The Boggle board
-   * @param generous Allow using same dice multiple times
    * @param currentIndex Current die to try for append
    * @param currentWord The current found pre-word
    * @param visited Boolean representation of visited dice on the Boggle board
@@ -85,7 +93,6 @@ export abstract class Boggle implements BoggleGameModeInterface {
   private findWordFromIndex = (
     word: string,
     boggle: string[][],
-    generous = false,
     currentIndex: [number, number] = [0, 0],
     currentWord: string = "",
     visited: boolean[][] = [],
@@ -113,7 +120,7 @@ export abstract class Boggle implements BoggleGameModeInterface {
       return true;
     }
     // Fill visited table if generous game is not set
-    if (!generous) {
+    if (!this.settings.generous) {
       visited[y][x] = true;
     }
     // Traverse each adjecant row and column not outside of boggle table
@@ -135,7 +142,6 @@ export abstract class Boggle implements BoggleGameModeInterface {
             const result = this.findWordFromIndex(
               word,
               boggle,
-              generous,
               [row, column],
               nextWord,
               visited,
@@ -149,10 +155,25 @@ export abstract class Boggle implements BoggleGameModeInterface {
     }
     return false;
   };
+
+  add = (word: string): boolean => {
+    if (this.settings.battle) {
+      if (this.playedWords.includes(word)) {
+        return false;
+      }
+      this.playedWords.push(word);
+    }
+    return true;
+  };
 }
 
 export abstract class Foggle extends Boggle {
   verify = (word: string): boolean => {
+    // Search for any occurence of non-numeric or
+    // more than one +-*/= in a row
+    if (word.match(/([^0-9])([\-\+\*\/\=])/)) {
+      return false;
+    }
     return eval(word.replace("=", "==="));
   };
 

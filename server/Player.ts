@@ -52,6 +52,9 @@ export default class Player {
       if (this.wordlist.includes(message)) {
         this.sendMessage("Your wordlist already contains " + message);
       }
+      if (!this.game.gameMode.add(message)) {
+        this.sendMessage("The common wordlist already contains " + message);
+      }
       this.wordlist.push(message);
     }
   }
