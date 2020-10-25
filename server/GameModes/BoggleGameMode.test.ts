@@ -340,7 +340,6 @@ Deno.test({
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2/2+8-2*2===5");
-    console.log({ "TEST": "TEST", result });
     assert(!result);
   },
 });

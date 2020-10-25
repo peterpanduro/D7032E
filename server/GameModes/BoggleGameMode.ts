@@ -12,7 +12,7 @@
 import Die from "../Die.ts";
 
 export interface BoggleGameModeInterface {
-  dice: Die[];
+  readonly dice: Die[];
   settings: Settings;
   calculateScore(list: string[]): number;
   verify(word: string): boolean;
@@ -23,9 +23,11 @@ export interface BoggleGameModeInterface {
 export class Settings {
   generous;
   battle;
-  constructor(generous: boolean = false, battle: boolean = false) {
+  timer;
+  constructor(generous: boolean = false, battle: boolean = false, timer = 60) {
     this.generous = generous;
     this.battle = battle;
+    this.timer = timer;
   }
 }
 

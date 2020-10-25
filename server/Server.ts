@@ -11,7 +11,7 @@ import Game from "./Game.ts";
 // Right now the Game works as a single global object (singleton).
 // But it should be possible to transform to a multigame server
 // without changing much (if anything) in the Game implementation.
-const game = new Game();
+let game: Game;
 
 // One handleWebSocket is created for each connection (player)
 const handleWebSocket = async (socket: WebSocket) => {
@@ -44,6 +44,7 @@ const startServer = async () => {
   if (import.meta.main) {
     const port = Deno.args[0] || "2048";
     console.log(`websocket server is running on :${port}`);
+    game = new Game();
     for await (const request of serve(`:${port}`)) {
       const { conn, r: bufReader, w: bufWriter, headers } = request;
       acceptWebSocket({
@@ -65,6 +66,7 @@ const startServer = async () => {
 const listenForInput = async () => {
   for await (const input of stdin) {
     // Forward all stdin to game
+    console.log(input);
     game.message(input);
   }
 };

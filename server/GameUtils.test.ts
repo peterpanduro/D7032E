@@ -4,7 +4,13 @@ import {
 } from "https://deno.land/std@0.74.0/testing/asserts.ts";
 import Die from "./Die.ts";
 import Boggle16 from "./GameModes/Boggle16.ts";
-import { shuffle, rollAndPlaceDice, sortFunc } from "./GameUtils.ts";
+import Foggle16 from "./GameModes/Foggle16.ts";
+import {
+  shuffle,
+  rollAndPlaceDice,
+  sortFunc,
+  findAllWordsInBoard,
+} from "./GameUtils.ts";
 
 Deno.test({
   name: "Shuffle",
@@ -138,5 +144,170 @@ Deno.test({
     });
     const expected = [b, d, a, c];
     assertEquals(sorted, expected);
+  },
+});
+
+Deno.test({
+  name: "Find all words in Boggle 2x2",
+  fn: async () => {
+    const board = [
+      ["B", "K"],
+      ["A", "R"],
+    ];
+    const gameMode = new Boggle16();
+    const result = await findAllWordsInBoard(board, gameMode);
+    assertEquals(
+      result,
+      new Set([
+        "AB",
+        "AR",
+        "ARB",
+        "ARK",
+        "BA",
+        "BAR",
+        "BARK",
+        "BRA",
+        "BRAK",
+        "KA",
+        "KAB",
+        "KBAR",
+        "KRAB",
+      ]),
+    );
+  },
+});
+
+Deno.test({
+  name: "Find all words in 3x3 Boggle",
+  fn: async () => {
+    const board = [
+      ["W", "O", "A"],
+      ["T", "Z", "B"],
+      ["T", "Z", "B"],
+    ];
+    const gameMode = new Boggle16();
+    const result = await findAllWordsInBoard(board, gameMode);
+    assertEquals(
+      result,
+      new Set([
+        "AB",
+        "ABB",
+        "ABO",
+        "AZO",
+        "BA",
+        "BAO",
+        "BAZZ",
+        "BO",
+        "BOA",
+        "BOT",
+        "BOTT",
+        "BOW",
+        "OB",
+        "OBA",
+        "OW",
+        "OWT",
+        "TO",
+        "TOW",
+        "TWO",
+        "WO",
+        "WOT",
+        "ZA",
+        "ZO",
+        "ZOA",
+      ]),
+    );
+  },
+});
+
+// Deno.test({
+//   name: "Find all words in 4x4 Boggle",
+//   fn: async () => {
+//     const board = [
+//       ["W", "O", "A", "K"],
+//       ["T", "Z", "B", "C"],
+//       ["T", "Z", "B", "U"],
+//       ["I", "M", "D", "F"],
+//     ];
+//     const gameMode = new Boggle16();
+//     const result = await findAllWordsInBoard(board, gameMode);
+//     assertEquals(
+//       result,
+//       new Set(
+//         [
+//           "AB",
+//           "ABB",
+//           "ABO",
+//           "AZO",
+//           "BA",
+//           "BAC",
+//           "BACK",
+//           "BAO",
+//           "BAZZ",
+//           "BO",
+//           "BOA",
+//           "BOAK",
+//           "BOT",
+//           "BOTT",
+//           "BOW",
+//           "BUB",
+//           "BUBA",
+//           "BUBO",
+//           "BUCK",
+//           "BUD",
+//           "CAB",
+//           "CAZ",
+//           "CUB",
+//           "CUD",
+//           "DUB",
+//           "DUBBO",
+//           "DUCK",
+//           "FUB",
+//           "FUCK",
+//           "FUD",
+//           "IT",
+//           "KA",
+//           "KAB",
+//           "MI",
+//           "MITT",
+//           "MIZ",
+//           "MIZZ",
+//           "OAK",
+//           "OB",
+//           "OBA",
+//           "OW",
+//           "OWT",
+//           "TI",
+//           "TIZ",
+//           "TIZZ",
+//           "TO",
+//           "TOW",
+//           "TWO",
+//           "WO",
+//           "WOT",
+//           "ZA",
+//           "ZACK",
+//           "ZIMB",
+//           "ZIT",
+//           "ZO",
+//           "ZOA",
+//           "ZOBU",
+//         ],
+//       ),
+//     );
+//   },
+// });
+
+Deno.test({
+  name: "Find no words in Foggle",
+  fn: async () => {
+    const board = [
+      ["1", "3", "4", "2"],
+      ["2", "5", "9", "3"],
+      ["3", "8", "2", "0"],
+      ["1", "2", "5", "8"],
+    ];
+    const gameMode = new Foggle16();
+    const result = await findAllWordsInBoard(board, gameMode);
+    assertEquals(result, []);
   },
 });

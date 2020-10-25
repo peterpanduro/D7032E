@@ -9,6 +9,7 @@ export default class Player {
   private connected = true;
   private wordlist: string[];
   boggle?: string[][];
+  name?: string;
 
   constructor(
     socket: WebSocket,
@@ -33,6 +34,14 @@ export default class Player {
     return this.wordlist;
   }
 
+  getName(): string {
+    return this.name ? this.name : this.playerID;
+  }
+
+  resetWordlist(): void {
+    this.wordlist = [];
+  }
+
   sendMessage(message: string) {
     if (!this.socket.isClosed) {
       this.socket.send(message as string);
@@ -40,6 +49,10 @@ export default class Player {
   }
 
   readMessage(message: string) {
+    if (this.game.getState() === State.GAME_NOT_STARTED) {
+      this.name = message;
+      this.sendMessage("Your name is " + this.name);
+    }
     if (this.game.getState() === State.GAME_STARTED) {
       if (!this.game.playWord(message, this.boggle!)) {
         this.sendMessage(message + " can not be played");
