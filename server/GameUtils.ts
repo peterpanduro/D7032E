@@ -32,6 +32,7 @@ export const rollAndPlaceDice = (dice: Die[]): string[][] => {
     returnDice[i] = [];
     for (let j = 0; j < size; j++) {
       const die = shuffledDice.pop()!;
+      die.roll();
       returnDice[i][j] = die.getUpSide();
     }
   }

@@ -173,9 +173,16 @@ export abstract class Boggle implements BoggleGameModeInterface {
 
 export abstract class Foggle extends Boggle {
   verify = (word: string): boolean => {
-    // Search for any occurence of non-numeric or
-    // more than one +-*/= in a row
-    if (word.match(/([^0-9])([\-\+\*\/\=])/)) {
+    // Search for any occurence of not allowed char
+    if (word.match(/([^0-9\+\-\*\/\=])/)) {
+      return false;
+    }
+    // Make sure there is only on equal sign
+    if (word.match(/=/g)?.length !== 1) {
+      return false;
+    }
+    // Make sure there is maximum one sign in a row
+    if (word.match(/([\+\-\*\/])\1{1,}/)) {
       return false;
     }
     return eval(word.replace("=", "==="));

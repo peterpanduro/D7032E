@@ -65,8 +65,6 @@ const startServer = async () => {
 // Start listening for console input asyncronously
 const listenForInput = async () => {
   for await (const input of stdin) {
-    // Forward all stdin to game
-    console.log(input);
     game.message(input);
   }
 };

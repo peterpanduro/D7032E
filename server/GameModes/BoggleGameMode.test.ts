@@ -271,7 +271,7 @@ Deno.test({
 // **************************************
 
 Deno.test({
-  name: "Foggle dice",
+  name: "Foggle score",
   fn: () => {
     const expected = 2;
     const gameMode = new Foggle16();
@@ -327,7 +327,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Verify longer",
+  name: "Verify longer expression",
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2/2+8-2*2=5");
@@ -336,7 +336,7 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Multiple equals",
+  name: "Multiple equals in a row to return false",
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2/2+8-2*2===5");
@@ -345,10 +345,28 @@ Deno.test({
 });
 
 Deno.test({
-  name: "Multiple expressions in a row",
+  name: "Reject pow using **",
   fn: () => {
     const gameMode = new Foggle16();
     const result = gameMode.verify("2**2=4");
     assert(!result);
+  },
+});
+
+Deno.test({
+  name: "Reject multiple separated equal signs =",
+  fn: () => {
+    const gameMode = new Foggle16();
+    const result = gameMode.verify("4=4=4");
+    assert(!result);
+  },
+});
+
+Deno.test({
+  name: "Reject unvalid chars",
+  fn: () => {
+    const gameMode = new Foggle16();
+    assert(!gameMode.verify("4s+4=4"));
+    assert(!gameMode.verify("4%4=0"));
   },
 });

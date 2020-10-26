@@ -91,12 +91,15 @@ export default class Game {
 
   start = (gameMode: BoggleGameModeInterface) => {
     if (this.state !== State.GAME_NOT_STARTED) {
-      throw new Error("Game is not ready for start");
+      console.log("Game is not ready for start");
+      return;
     }
     if (this.players.length < 2) {
-      throw new Error("Not enough players");
+      console.log("Not enough players");
+      return;
     }
     this.state = State.GAME_STARTED;
+
     this.gameMode = gameMode;
     const boggle = this.rollDice();
     this.players.forEach((player) => {
@@ -119,21 +122,35 @@ export default class Game {
 
   private end = () => {
     if (this.state !== State.GAME_STARTED) {
-      throw new Error("Game is not started");
+      console.log("Game is not started");
+      return;
     }
     this.state = State.GAME_ENDED;
-    this.printPostGame();
+
+    this.players = this.players.sort((a, b) => {
+      return sortFunc(this.gameMode!, a.getWordlist(), b.getWordlist());
+    });
+    this.players.forEach((player, index) => {
+      player.sendMessage(
+        "You ended up in place " + (index + 1) + " with " +
+          this.gameMode?.calculateScore(player.getWordlist()) + " points.\n" +
+          "You used the words " + player.getWordlist(),
+      );
+    });
+    this.print();
   };
 
   restart = () => {
     if (this.state === State.GAME_STARTED) {
-      throw new Error("Can't restart current game");
+      console.log("Can't restart current game");
+      return;
     }
-    this.printNewGame();
     this.state = State.GAME_NOT_STARTED;
+
     this.players.forEach((player) => {
       player.resetWordlist();
     });
+    this.print();
   };
 
   /**********************************************
@@ -160,7 +177,6 @@ export default class Game {
           break;
         case "4":
           this.state = State.SETTINGS;
-          this.printSettings();
           break;
         case "!":
           Deno.exit();
@@ -177,20 +193,21 @@ export default class Game {
           break;
         case "3":
           const sec = message.substr(2, message.length - 2);
-          try {
-            this.settings.timer = Number(sec);
-          } catch (error) {
-            console.log("Cannot assign " + sec + " to timer");
+          const parsedSec = Number(sec);
+          if (isNaN(parsedSec) || parsedSec === 0) {
+            console.log(
+              "You need to provide a number in the format 3[space]number",
+            );
+            break;
           }
+          this.settings.timer = parsedSec;
           break;
         case "4":
           this.state = State.GAME_NOT_STARTED;
-          this.printNewGame();
           break;
         default:
           console.log("Unknown command");
       }
-      this.printSettings();
     } else if (this.state === State.GAME_ENDED) {
       switch (message) {
         case "1":
@@ -208,6 +225,7 @@ export default class Game {
           console.log("Unknown command");
       }
     }
+    this.print();
   };
 
   /**********************************************
@@ -215,6 +233,24 @@ export default class Game {
    * PRINTING
    * 
    */
+
+  private print = (state: State = this.state) => {
+    switch (state) {
+      case State.SETTINGS:
+        this.printSettings();
+        break;
+      case State.GAME_NOT_STARTED:
+        this.printNewGame();
+        break;
+      case State.GAME_STARTED:
+        break;
+      case State.GAME_ENDED:
+        this.printPostGame();
+        break;
+      default:
+        console.log("Trying to print unknown state");
+    }
+  };
 
   private printValidWords = () => {
     if (!this.validWords) {
@@ -232,10 +268,7 @@ export default class Game {
   };
 
   private printScoreboard = () => {
-    const sortedPlayers = this.players.sort((a, b) => {
-      return sortFunc(this.gameMode!, a.getWordlist(), b.getWordlist());
-    });
-    sortedPlayers.forEach((player, index) => {
+    this.players.forEach((player, index) => {
       console.log(
         `Placement ${index + 1}\n${player.getName()}\nScore: ${
           this.gameMode?.calculateScore(player.getWordlist())
@@ -263,7 +296,8 @@ export default class Game {
       "* [2] Print all words                *\n" +
       "* [3] New game                       *\n" +
       "* [!] Quit                           *\n" +
-      "**************************************\n";
+      "**************************************\n" +
+      this.players[0].getName() + " was the winner!";
     console.log(menu);
   };
 
