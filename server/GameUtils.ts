@@ -74,6 +74,10 @@ const findAllPossibleWordCombinations = async (
 ): Promise<Set<string>> => {
 	return new Promise((resolve) => {
 		const size = boggle.length;
+		if (size > 4) {
+			resolve(new Set([])); // BUG: FIX: TODO: Takes too long, needs optimization
+			return;
+		}
 		let foundWords: Set<string> = new Set();
 		let currentRow = 0;
 		let currentColumn = 0;
@@ -97,7 +101,6 @@ const findAllPossibleWordCombinations = async (
 			findWordsUtil(visited, currentRow, currentColumn, "");
 			currentColumn++;
 
-			let currentString = "";
 			setTimeout(() => {
 				findAllWordsInBoard();
 			}, 100);
